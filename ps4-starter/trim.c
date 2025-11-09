@@ -8,7 +8,22 @@ void trim(char s[]) {
     * 
     * You may, however, write your own string functions that you need.
     */
-
+    // loop to check for size
+    int i = 0;                            // i exists outside of loop
+    //for(;s[i]!='\0'; i++)                // checks that the current char is NOT the NULL terminator
+    //{
+        
+    //}
+    while(s[i]!='\0')
+    {
+      i++;
+    }
+    // loop to check for whitespaces
+    while(s[i-1]==' ' || s[i-1]=='\t' || s[i-1]=='\n' || s[i-1]=='\r')
+    {
+      s[i-1] = '\0';
+      i--;
+    }
 }
 
 int main() {
