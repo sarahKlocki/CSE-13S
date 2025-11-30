@@ -8,7 +8,33 @@ int copy_integers(FILE *outfp, FILE *infp, int start, int end)
 	     You may like to use the functions fseek(), fread() and fwrite() to accomplish this task. Check man pages for details.
 	     Return 0 upon successful completion. Otherwise, return -1. */	
 
-    return 0;
+        int intValue;       // stores the int that we read
+       
+        if(fseek(infp, start* sizeof(int), SEEK_SET) != 0) {
+            perror("problem with fseek");
+            return -1;
+        }
+        for(int i = start; i <=end; i++) {
+            // read ints in the file into your variable
+            if(fread(&intValue, sizeof(int), 1, infp) != 1) {
+                perror("problem with fread");
+                return -1;
+            }
+            // buffer: intValue
+            // size_t size: sizeof(int)
+            // size_t count: i (index)
+            // file: infp
+            if(fwrite(&intValue, sizeof(int), 1, outfp) != 1) {
+                perror("problem with fwrite");
+                return -1;
+            }
+            // string: intValue
+            // size_t size: sizeof(int)
+            // size_t nmemb: 1    // only asking for 1 number going thru loop
+            // file: outfp
+        }
+        
+        return 0;
 }
 
 int main(int argc, char *argv[])
@@ -21,7 +47,21 @@ int main(int argc, char *argv[])
     FILE *infp, *outfp;
 
     /* TODO: Open the input and output files for read and write operations respectively. If the operations fail, return -1. */
-
+    //infp = fopen(argv[1], "rb");     // returns NULL if file doesn't exist
+    infp = fopen(argv[1], "rb");
+    if(infp == NULL) {
+        perror("Cannot open input file to read");
+        //fclose(infp);
+        return -1;
+   }
+   
+    //outfp = fopen(argv[2], "wb");
+    outfp = fopen(argv[2], "wb");
+    if(outfp == NULL) {
+        perror("Cannot open output file to write");
+        fclose(infp);
+       return -1;
+    }
 
     for (int i=3; i<argc; i++) {
         int start, end;
@@ -44,7 +84,16 @@ int main(int argc, char *argv[])
     } 
 
     /* TODO: Close the files. If the operations fail, return -1. */
+    //if(fclose (&argv[1]!= 0))
+    if(fclose(infp) != 0) {
+        perror("Cannot close input file");
+        return -1;
+    }
 
-
+    //if(fclose (argv[2]!= 0)) {
+    if(fclose(outfp) != 0) {
+        perror("Cannot close output file");
+        return -1;
+    }
     return 0;
 }
